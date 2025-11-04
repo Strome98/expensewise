@@ -11,15 +11,10 @@ const userSchema = new mongoose.Schema({
   },
   passwordHash: { type: String, required: true },
   displayName: { type: String, trim: true },
-  // Simple preferences object; can be expanded later
   preferences: {
     alertOnNegativeNet: { type: Boolean, default: true },
     currency: { type: String, default: "HUF" },
   },
-  // Account deletion scheduling
-  deletionRequestedAt: { type: Date },
-  deletionScheduledFor: { type: Date },
-  createdAt: { type: Date, default: Date.now },
 });
 
 userSchema.methods.verifyPassword = function (password) {

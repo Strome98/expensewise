@@ -2,11 +2,11 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-import authRoutes from "./routes/auth.js";
-import transactionRoutes from "./routes/transactions.js";
-import profileRoutes from "./routes/profile.js";
-import { PREDEFINED_CATEGORIES } from "./models/Transaction.js";
-import { authRequired } from "./middleware/authRequired.js";
+import authRoutes from "./authController.js";
+import transactionRoutes from "./transactionsController.js";
+import profileRoutes from "./profileController.js";
+import { PREDEFINED_CATEGORIES } from "./Transaction.js";
+import { authRequired } from "./authRequired.js";
 import { MongoMemoryServer } from "mongodb-memory-server";
 
 dotenv.config();

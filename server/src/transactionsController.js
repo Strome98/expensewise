@@ -1,7 +1,7 @@
 import { Router } from "express";
 import mongoose from "mongoose";
-import { Transaction, PREDEFINED_CATEGORIES } from "../models/Transaction.js";
-import { convertFromHUF, roundCurrency, FX_RATES } from "../util/currency.js";
+import { Transaction, PREDEFINED_CATEGORIES } from "./Transaction.js";
+import { convertFromHUF, roundCurrency, FX_RATES } from "./currency.js";
 
 const router = Router();
 

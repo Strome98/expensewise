@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { User } from "../models/User.js";
-import { Transaction } from "../models/Transaction.js";
-import { FX_RATES } from "../util/currency.js";
+import { User } from "./User.js";
+import { Transaction } from "./Transaction.js";
+import { FX_RATES } from "./currency.js";
 
 const router = Router();
 
