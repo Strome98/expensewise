@@ -26,9 +26,8 @@ export default function Profile() {
 
   const [exportError, setExportError] = useState(null);
   const [deleteState, setDeleteState] = useState({
-    scheduledFor: null,
     error: null,
-    confirming: false,
+    confirmStep: false,
   });
 
   async function exportData(format) {
@@ -99,6 +98,13 @@ export default function Profile() {
       setDeleteState((s) => ({ ...s, error: "Could not cancel deletion" }));
     }
   }
+  // two-step confirmation toggle
+  function startDeleteFlow(){
+    setDeleteState(s => ({ ...s, confirmStep: true }));
+  }
+  function cancelDeleteFlow(){
+    setDeleteState(s => ({ ...s, confirmStep: false, error: null }));
+  }
 
   async function executeDeletion() {
     setDeleteState((s) => ({ ...s, error: null }));
@@ -117,6 +123,23 @@ export default function Profile() {
         ...s,
         error: "Deletion failed (grace period not finished?)",
       }));
+    }
+  }
+
+  async function executeImmediateDeletion() {
+    setDeleteState((s) => ({ ...s, error: null }));
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/profile/delete/execute?force=true`,
+        { method: "DELETE", headers: { Authorization: `Bearer ${token}` } }
+      );
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed");
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    } catch (e) {
+      setDeleteState((s) => ({ ...s, error: "Immediate deletion failed" }));
     }
   }
 
@@ -201,63 +224,35 @@ export default function Profile() {
 
       <div className="p-4 bg-white dark:bg-slate-800 border dark:border-slate-700 rounded space-y-3 max-w-md">
         <h2 className="font-semibold">Account Deletion</h2>
-        {!deleteState.scheduledFor && (
-          <div className="space-y-2">
-            <p className="text-xs text-gray-600 dark:text-slate-300">
-              Request deletion to schedule permanent removal after a 7 day grace
-              period. You can cancel anytime before execution.
-            </p>
-            {!deleteState.confirming ? (
-              <button
-                onClick={() =>
-                  setDeleteState((s) => ({ ...s, confirming: true }))
-                }
-                className="px-3 py-1 text-sm rounded bg-red-600 text-white hover:bg-red-700"
-              >
-                Request Deletion
-              </button>
-            ) : (
-              <div className="flex gap-2">
-                <button
-                  onClick={requestDeletion}
-                  className="px-3 py-1 text-sm rounded bg-red-600 text-white hover:bg-red-700"
-                >
-                  Confirm Request
-                </button>
-                <button
-                  onClick={() =>
-                    setDeleteState((s) => ({ ...s, confirming: false }))
-                  }
-                  className="px-3 py-1 text-sm border rounded"
-                >
-                  Cancel
-                </button>
-              </div>
-            )}
+        <p className="text-xs text-gray-600 dark:text-slate-300">
+          Permanently remove your account and all transactions. This <span className="font-semibold">cannot</span> be undone.
+        </p>
+        {!deleteState.confirmStep ? (
+          <button
+            onClick={startDeleteFlow}
+            className="px-3 py-1 text-sm rounded bg-red-600 text-white hover:bg-red-700"
+          >
+            Delete Account
+          </button>
+        ) : (
+          <div className="flex gap-2 flex-wrap items-center">
+            <span className="text-xs text-gray-500 dark:text-slate-400">Are you absolutely sure?</span>
+            <button
+              onClick={executeDeletion}
+              className="px-3 py-1 text-sm rounded bg-red-600 text-white hover:bg-red-700"
+            >
+              Yes, delete permanently
+            </button>
+            <button
+              onClick={cancelDeleteFlow}
+              className="px-3 py-1 text-sm border rounded"
+            >
+              Cancel
+            </button>
           </div>
         )}
-        {deleteState.scheduledFor && (
-          <div className="space-y-2">
-            <p className="text-xs text-gray-600 dark:text-slate-300">
-              Deletion scheduled for:{" "}
-              {new Date(deleteState.scheduledFor).toLocaleString()}. Data will
-              be permanently removed then.
-            </p>
-            <div className="flex gap-2 flex-wrap">
-              <button
-                onClick={cancelDeletion}
-                className="px-3 py-1 text-sm rounded bg-blue-600 text-white hover:bg-blue-700"
-              >
-                Cancel Deletion
-              </button>
-              <button
-                onClick={executeDeletion}
-                className="px-3 py-1 text-sm rounded bg-red-600 text-white hover:bg-red-700"
-              >
-                Execute Now
-              </button>
-            </div>
-          </div>
+        {deleteState.error && (
+          <div className="text-xs text-red-600">{deleteState.error}</div>
         )}
         {deleteState.error && (
           <div className="text-xs text-red-600">{deleteState.error}</div>

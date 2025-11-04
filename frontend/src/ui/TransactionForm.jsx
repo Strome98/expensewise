@@ -55,12 +55,12 @@ export default function TransactionForm({ onDone }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="grid md:grid-cols-6 gap-2 bg-white p-4 border rounded shadow"
+      className="grid md:grid-cols-6 gap-2 bg-white dark:bg-slate-900 p-4 border dark:border-slate-700 rounded shadow"
     >
       <select
         value={type}
         onChange={(e) => setType(e.target.value)}
-        className="border p-2 md:col-span-1"
+        className="border p-2 md:col-span-1 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100"
       >
         <option value="expense">Expense</option>
         <option value="income">Income</option>
@@ -70,12 +70,12 @@ export default function TransactionForm({ onDone }) {
         onChange={(e) => setAmount(e.target.value)}
         type="number"
         placeholder="Amount"
-        className="border p-2 md:col-span-1"
+        className="border p-2 md:col-span-1 text-gray-800 placeholder-gray-400 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100"
       />
       <select
         value={category}
         onChange={(e) => setCategory(e.target.value)}
-        className="border p-2 md:col-span-1"
+        className="border p-2 md:col-span-1 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100"
       >
         {PREDEFINED_CATEGORIES.map((c) => (
           <option key={c} value={c}>
@@ -87,16 +87,16 @@ export default function TransactionForm({ onDone }) {
         value={note}
         onChange={(e) => setNote(e.target.value)}
         placeholder="Note"
-        className="border p-2 md:col-span-1"
+        className="border p-2 md:col-span-1 text-gray-800 placeholder-gray-400 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100"
       />
       <input
         value={date}
         onChange={(e) => setDate(e.target.value)}
         type="date"
-        className="border p-2 md:col-span-1"
+        className="border p-2 md:col-span-1 text-gray-800 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100"
       />
       <div className="md:col-span-1 flex flex-col">
-        <button className="bg-green-600 text-white p-2 mb-1">Save</button>
+        <button className="bg-green-600 text-white p-2 mb-1 hover:bg-green-700 transition-colors">Save</button>
         {error && <span className="text-red-600 text-xs">{error}</span>}
       </div>
     </form>

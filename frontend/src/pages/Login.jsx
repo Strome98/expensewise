@@ -34,14 +34,14 @@ export default function Login() {
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
           type="email"
-          className="w-full border p-2"
+          className="w-full border p-2 text-gray-800 placeholder-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-800 dark:text-slate-100 dark:border-slate-600"
         />
         <input
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Password"
           type="password"
-          className="w-full border p-2"
+          className="w-full border p-2 text-gray-800 placeholder-gray-400 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-slate-800 dark:text-slate-100 dark:border-slate-600"
         />
         {error && <div className="text-red-600 text-sm">{error}</div>}
         <button className="bg-blue-600 text-white px-4 py-2 w-full">

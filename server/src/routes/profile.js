@@ -44,7 +44,7 @@ router.patch("/preferences", async (req, res) => {
   }
 });
 
-// Current central rate
+// Get central rate
 router.get("/fx/rates", (req, res) => {
   res.json({
     base: "HUF",
@@ -91,53 +91,10 @@ router.get("/export", async (req, res) => {
   }
 });
 
-// Request account deletion (grace period 7 days)
-router.post("/delete/request", async (req, res) => {
-  try {
-    const user = await User.findById(req.userId);
-    if (!user) return res.status(404).json({ error: "User not found" });
-    const now = new Date();
-    const graceDays = 7;
-    user.deletionRequestedAt = now;
-    user.deletionScheduledFor = new Date(
-      now.getTime() + graceDays * 24 * 60 * 60 * 1000
-    );
-    await user.save();
-    res.json({
-      status: "scheduled",
-      deletionScheduledFor: user.deletionScheduledFor,
-    });
-  } catch (e) {
-    res.status(500).json({ error: "Could not schedule deletion" });
-  }
-});
-
-// Cancel deletion request
-router.post("/delete/cancel", async (req, res) => {
-  try {
-    const user = await User.findById(req.userId);
-    if (!user) return res.status(404).json({ error: "User not found" });
-    user.deletionRequestedAt = undefined;
-    user.deletionScheduledFor = undefined;
-    await user.save();
-    res.json({ status: "canceled" });
-  } catch (e) {
-    res.status(500).json({ error: "Could not cancel deletion" });
-  }
-});
-
-// Immediate deletion if grace period passed (or force query param true)
 router.delete("/delete/execute", async (req, res) => {
   try {
-    const force = req.query.force === "true";
     const user = await User.findById(req.userId);
     if (!user) return res.status(404).json({ error: "User not found" });
-    if (!user.deletionScheduledFor)
-      return res.status(400).json({ error: "No deletion scheduled" });
-    const now = new Date();
-    if (now < user.deletionScheduledFor && !force) {
-      return res.status(400).json({ error: "Grace period not finished" });
-    }
     await Transaction.deleteMany({ userId: req.userId });
     await User.deleteOne({ _id: req.userId });
     res.json({ status: "deleted" });
