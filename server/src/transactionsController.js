@@ -32,7 +32,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Read list (optional filters)
+// Read
 router.get("/", async (req, res) => {
   const {
     from,
@@ -178,7 +178,7 @@ router.get("/summary/categories", async (req, res) => {
   }
 });
 
-// Monthly summary (net + breakdown per month)
+// Monthly summary
 router.get("/summary/monthly", async (req, res) => {
   try {
     const userObjectId = new mongoose.Types.ObjectId(req.userId);
@@ -233,7 +233,7 @@ router.get("/summary/monthly", async (req, res) => {
   }
 });
 
-// Overall totals for header summary
+// Overall totals for header
 router.get("/totals", async (req, res) => {
   try {
     const userObjectId = new mongoose.Types.ObjectId(req.userId);
