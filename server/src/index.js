@@ -5,8 +5,10 @@ import dotenv from "dotenv";
 import authRoutes from "./authController.js";
 import transactionRoutes from "./transactionsController.js";
 import profileRoutes from "./profileController.js";
+import adminRoutes from "./adminController.js";
 import { PREDEFINED_CATEGORIES } from "./Transaction.js";
 import { authRequired } from "./authRequired.js";
+import { adminRequired } from "./adminRequired.js";
 import { MongoMemoryServer } from "mongodb-memory-server";
 
 dotenv.config();
@@ -22,6 +24,7 @@ app.get("/api/health", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/transactions", authRequired, transactionRoutes);
 app.use("/api/profile", authRequired, profileRoutes);
+app.use("/api/admin", adminRequired, adminRoutes);
 app.get("/api/categories", (req, res) => res.json(PREDEFINED_CATEGORIES));
 
 const PORT = process.env.PORT || 5000;

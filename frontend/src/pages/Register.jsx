@@ -18,7 +18,7 @@ export default function Register() {
         import.meta.env.VITE_API_URL + "/auth/register",
         { email, password }
       );
-      login(res.data.token);
+  login(res.data.token, res.data.role);
       navigate("/");
     } catch (e) {
       setError("Registration failed");

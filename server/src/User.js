@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
   },
   passwordHash: { type: String, required: true },
   displayName: { type: String, trim: true },
+  role: { type: String, enum: ['Administrator','User'], default: 'User' },
   preferences: {
     alertOnNegativeNet: { type: Boolean, default: true },
     currency: { type: String, default: "HUF" },

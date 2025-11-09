@@ -5,6 +5,7 @@ import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
 import { TransactionsProvider } from "./context/TransactionsContext.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Profile from "./pages/Profile.jsx";
+import AdminPage from "./pages/AdminPage.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 
@@ -14,7 +15,7 @@ function PrivateRoute({ children }) {
 }
 
 function Layout({ children }) {
-  const { token, logout, displayName } = useAuth();
+  const { token, logout, displayName, role } = useAuth();
   const [dark, setDark] = useState(
     () => localStorage.getItem("theme") === "dark"
   );
@@ -71,6 +72,22 @@ function Layout({ children }) {
                   Profile
                 </NavLink>
               </li>
+              {role === 'Administrator' && (
+                <li>
+                  <NavLink
+                    to="/admin"
+                    className={({ isActive }) =>
+                      `${linkBase} ${
+                        isActive
+                          ? "bg-blue-600 text-white"
+                          : "text-gray-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-700"
+                      }`
+                    }
+                  >
+                    Admin
+                  </NavLink>
+                </li>
+              )}
             </ul>
           )}
         </div>
@@ -133,6 +150,14 @@ export default function App() {
               element={
                 <PrivateRoute>
                   <Profile />
+                </PrivateRoute>
+              }
+            />
+            <Route
+              path="/admin"
+              element={
+                <PrivateRoute>
+                  <AdminPage />
                 </PrivateRoute>
               }
             />

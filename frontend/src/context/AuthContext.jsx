@@ -10,6 +10,7 @@ export function AuthProvider({ children }) {
     currency: "HUF",
   });
   const [displayName, setDisplayName] = useState("");
+  const [role, setRole] = useState("User");
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileError, setProfileError] = useState(null);
 
@@ -28,7 +29,8 @@ export function AuthProvider({ children }) {
       setPreferences(
         res.data.preferences || { alertOnNegativeNet: true, currency: "HUF" }
       );
-      setDisplayName(res.data.displayName || "");
+  setDisplayName(res.data.displayName || "");
+  if (res.data.role) setRole(res.data.role);
     } catch (e) {
       setProfileError("Failed to load profile");
     } finally {
@@ -47,15 +49,17 @@ export function AuthProvider({ children }) {
     }
   }
 
-  function login(t) {
+  function login(t, r) {
     setToken(t);
     localStorage.setItem("token", t);
+    if (r) setRole(r);
   }
   function logout() {
     setToken(null);
     localStorage.removeItem("token");
     setPreferences({ alertOnNegativeNet: true, currency: "HUF" });
     setDisplayName("");
+    setRole("User");
   }
 
   useEffect(() => {
@@ -70,6 +74,7 @@ export function AuthProvider({ children }) {
         logout,
         preferences,
         displayName,
+  role,
         updatePreferences,
         profileLoading,
         profileError,

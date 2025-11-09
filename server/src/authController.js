@@ -14,10 +14,10 @@ router.post("/register", async (req, res) => {
     if (existing) return res.status(409).json({ error: "Email already used" });
     const passwordHash = await User.hashPassword(password);
     const user = await User.create({ email, passwordHash });
-    const token = jwt.sign({ sub: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ sub: user._id, role: user.role }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
-    res.status(201).json({ token });
+    res.status(201).json({ token, role: user.role });
   } catch (e) {
     res.status(500).json({ error: "Registration failed" });
   }
@@ -33,10 +33,10 @@ router.post("/login", async (req, res) => {
     if (!user) return res.status(401).json({ error: "Invalid credentials" });
     const ok = await user.verifyPassword(password);
     if (!ok) return res.status(401).json({ error: "Invalid credentials" });
-    const token = jwt.sign({ sub: user._id }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ sub: user._id, role: user.role }, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
-    res.json({ token });
+    res.json({ token, role: user.role });
   } catch (e) {
     res.status(500).json({ error: "Login failed" });
   }

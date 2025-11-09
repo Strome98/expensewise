@@ -8,10 +8,9 @@ const router = Router();
 // Get current user profile (preferences only for now)
 router.get("/", async (req, res) => {
   try {
-    const user = await User.findById(req.userId).select("email preferences");
-
+    const user = await User.findById(req.userId).select("email preferences displayName role");
     if (!user) return res.status(404).json({ error: "User not found" });
-    res.json({ email: user.email, preferences: user.preferences });
+    res.json({ email: user.email, preferences: user.preferences, displayName: user.displayName, role: user.role });
   } catch (e) {
     res.status(500).json({ error: "Failed to load profile" });
   }
