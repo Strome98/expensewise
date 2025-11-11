@@ -44,7 +44,7 @@ router.post('/users/:id/demote', async (req,res)=>{
 router.delete('/users/:id', async (req,res)=>{
   try {
     const targetUserId = req.params.id;
-    const adminUserId = req.userId; // Set by adminRequired middleware
+    const adminUserId = req.userId;
 
     // Prevent self-deletion
     if(targetUserId === adminUserId){
