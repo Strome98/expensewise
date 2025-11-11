@@ -30,6 +30,19 @@ export default function AdminPage(){
     }
   }
 
+  async function deleteUser(id, email){
+    if(!window.confirm(`Are you sure you want to delete user ${email}?\n\nThis will permanently delete:\n- The user account\n- All their transactions\n\nThis action cannot be undone.`)){
+      return;
+    }
+    try {
+      await api.delete(`/admin/users/${id}`);
+      setUsers(users.filter(u=> u._id !== id));
+    } catch(e){
+      const msg = e.response?.data?.error || 'Deletion failed';
+      alert(msg);
+    }
+  }
+
   useEffect(()=>{ load(); },[]);
 
   return (
@@ -56,11 +69,12 @@ export default function AdminPage(){
               <td className='p-2'>{u.role}</td>
               <td className='p-2 space-x-2'>
                 {u.role !== 'Administrator' && (
-                  <button onClick={()=>changeRole(u._id,'promote')} className='px-2 py-1 text-xs bg-blue-600 text-white rounded'>Promote</button>
+                  <button onClick={()=>changeRole(u._id,'promote')} className='px-2 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700'>Promote</button>
                 )}
                 {u.role === 'Administrator' && (
-                  <button onClick={()=>changeRole(u._id,'demote')} className='px-2 py-1 text-xs bg-yellow-600 text-white rounded'>Demote</button>
+                  <button onClick={()=>changeRole(u._id,'demote')} className='px-2 py-1 text-xs bg-yellow-600 text-white rounded hover:bg-yellow-700'>Demote</button>
                 )}
+                <button onClick={()=>deleteUser(u._id, u.email)} className='px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700'>Delete</button>
               </td>
             </tr>
           ))}
