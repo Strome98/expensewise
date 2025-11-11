@@ -62,7 +62,7 @@ router.delete('/users/:id', async (req,res)=>{
       }
     }
 
-    // Delete user's transactions
+    // Delete associated transactions
     await Transaction.deleteMany({ userId: targetUserId });
     
     // Delete user
